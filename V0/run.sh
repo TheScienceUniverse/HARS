@@ -1,0 +1,9 @@
+# !/bin/bash
+echo Compiling...
+javac hars.java
+echo Running...
+java hars
+echo Deleting...
+rm *.class
+echo Bye!
+# etc.
