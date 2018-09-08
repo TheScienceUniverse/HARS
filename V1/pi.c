@@ -65,42 +65,102 @@ printf("\n");
 		printf("\n");
 	}
 */
-	p=0;
+	BYTE d=0;
+	int px, py, bw, bh, b0, b1;
 	for(i=0; i<h; i++){
 		for(j=0; j<w; j++){
-			if(X[i][j] == 0x00){
-				p = 1;
+			if(X[i][j] == 0x00) {
+				d = 1;
 				break;
 			}
 		}
-		if(p==1)	break;
+		if(d==1)	break;
 	}
-	printf("%d %d %02x\n", i, j, X[i][j]);
+	px=j, py=i, b0=py;
+	printf("First Pixel found at: %d %d %02x\n", px, py, X[py][px]);
 
-	int lw=0, lh=0; //...letter_(width/height)
-	int px=j, py=i; //...present coordinate
+	i=py+1;
+	while(d!=0 && py<h) {
+		d=0;
+		for(j=0; j<w; j++) {
+			if(X[i][j] == 0x00) {
+				d = 1;
+				break;
+			}
+		}
+		++i;
+	}
+	py=i, px=j-1;
+	printf("Last Pixel found at: %d %d %02x\n", px, py, X[py-1][px-1]);
+	b1=py;
+
+	printf("Height Threshold for the 1st Line: %d\n", b1-b0);
+
+	d=0;
+	int x0, y0, x1, y1;
+	for(i=0; i<w; i++) {
+		for(j=b0; j<b1; j++) {
+//			printf("%02x ", X[j][i]);
+			if(X[j][i]==0x00) {
+				x0=i, d=1;
+				break;
+			}
+//			X[j][i]=0x80;
+		}
+		if(d==1) { break; }
+//		printf("\n");
+	}
+
+	printf("x_min=%d\n", x0);
+
+/* Get letter height for a single line which comes first
+ * =>font-size in pixel
+ */
+/*	int px=j, py=i; //...present coordinate
 	int x0=px, x1=px, y0=py, y1=py;
 	while(1){
-//printf("%02x %02x %02x %02x\n", X[py][px], X[py+1][px-1], X[py+1][px], X[py+1][px+1]);
-		if(X[py+1][px-1] == 0x00){
+		if(X[py+1][px-1] == 0x00) {
 			--px, ++py;
-		} else if(X[py+1][px] == 0x00){
+		} else if(X[py+1][px] == 0x00) {
 			++py;
-		} else if(X[py+1][px+1] == 0x00){
+		} else if(X[py+1][px+1] == 0x00) {
 			++px, ++py;
 		} else if(X[py][px+1] == 0x00) {
 			++px;
 		} else { break; }
 	}
 	y1=py, x0=px;
-	lh=y1-y0;
-	printf("Letter Height: %d\n" "x0 = %d, y0 = %d, y1 = %d\n", lh, x0, y0, y1);
-//	int buff = lh/2;
+*/
 
-	for(i=y0; i<=y1; i++){
-		for(j=x0; j<=x0+10; j++)
-			X[i][j]=0x80;
+
+
+
+//...Determined below
+//	int bh = y1-y0;	// Buffer Height
+//	printf("Line Height (Variable): %d\n" "x0 = %d, y0 = %d, y1 = %d\n", bh, x0, y0, y1);
+/*
+	int buff = bh/2, b0, b1;
+	py = y0+buff, px=0;
+	d=0;
+	x0=0, y0=0, x1=0, y1=0;
+	for(i=0; i<w; i++) {
+		for(j=0; j<bh; j++) {
+			if(X[py+j][i]==0x00) {
+				d = 1;
+				break;
+			}
+		}
+		if(d==1){
+			
+		}
+		++px;
 	}
+
+	printf("\nFirst Position: %d\n", px);
+*/
+/*
+...Make Output file: WORKING FINE
+*/
 
 	FILE *fpo;
 	if((fpo = fopen("./op.pgm","wb")) == NULL){
@@ -113,7 +173,7 @@ printf("\n");
 			x = fwrite(&X[i][j], 1, 1, fpo);
 	}
 	fclose(fpo);
-
+/**/
 lE:	fclose(fpi);
 	return 0;
 }
