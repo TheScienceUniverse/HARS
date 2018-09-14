@@ -91,6 +91,10 @@ FIND_H:	for(i=b0; i<h; i++) {
 		if(d==1)	break;
 	}
 	px=j, py=i, b0=py;
+
+	if(py>=h) {
+		goto OP;
+	}
 //	printf("First Pixel found at: %d %d %02x\n", px, py, X[py][px]);
 
 	i=py+1;
@@ -138,18 +142,21 @@ FIND_H:	for(i=b0; i<h; i++) {
 		}
 		if(count>bh/4) { count=0; break; }
 	}
-/*
+
+printf("Iteration Count %d b1=%d\n", ic, b1);
+
 	if(b1<h) {
 		b0=b1+1, ++ic;
 		goto FIND_H;
 	}
-*/
-printf("Iteration Count %d b1=%d\n", ic, b1);
+
+
+/*
 	if(b1<h && ic<21) {
 		b0=b1+1, ++ic;
 		goto FIND_H;
 	}
-
+*/
 //	printf("x0=%d y0=%d, x1=%d y1=%d\n", x0, y0, x1, y1);
 
 
@@ -159,7 +166,7 @@ printf("Iteration Count %d b1=%d\n", ic, b1);
 /*
 ...Make Output file: WORKING FINE
 */
-
+OP:	printf("Creating output file\n");
 	FILE *fpo;
 	if((fpo = fopen("./op.pgm","wb")) == NULL) {
 		perror("Output File opening Error!\n");
