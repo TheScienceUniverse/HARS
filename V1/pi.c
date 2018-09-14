@@ -3,6 +3,19 @@
 #include<ctype.h>
 #define BYTE unsigned char
 
+
+void drawRect(BYTE **X, int x0, int y0, int x1, int y1) {
+	int i;
+	for(i=x0; i<x1; i++) {
+		X[y0][i]=0x30;
+		X[y1][i]=0x30;
+	}
+	for(i=y0; i<=y1; i++) {
+		X[i][x0]=0x30;
+		X[i][x1]=0x30;
+	}
+}
+
 int main(int argc, char *argv[]){
 	FILE *fpi;
 	unsigned long f_sz;
@@ -97,78 +110,55 @@ printf("\n");
 	printf("Height Threshold for the 1st Line: %d\n", b1-b0);
 
 	d=0;
-	int x0, y0, x1, y1;
+	int s=0, count=0;
+	int x0=w, y0=b1, x1=0, y1=b0;
 	for(i=0; i<w; i++) {
-		for(j=b0; j<b1; j++) {
-//			printf("%02x ", X[j][i]);
+		d=0;
+		for(j=b0; j<=b1; j++) {
 			if(X[j][i]==0x00) {
-				x0=i, d=1;
-				break;
+				count=0, d=1;
+				if(s==1) {
+					if(i<x0) { x0=i; }
+					if(i>x1) { x1=i; }
+					if(j<y0) { y0=j; }
+					if(j>y1) { y1=j; }
+				} else {
+					s=1;
+				}
+			} else {
+//				X[j][i]=0x80;
 			}
+
+		}
+		if(d==0 && s==1) {
+drawRect(X, x0, y0, x1, y1);
+x0=w, y0=b1, x1=0, y1=b0;
+			s=0; ++count;
 //			X[j][i]=0x80;
 		}
-		if(d==1) { break; }
+//		if(s==0) { drawRect(X, x0, y0, x1, y1); }
+		if(count>bh/4) { count=0; break; }
 //		printf("\n");
+
 	}
 
-	printf("x_min=%d\n", x0);
-
-/* Get letter height for a single line which comes first
- * =>font-size in pixel
- */
-/*	int px=j, py=i; //...present coordinate
-	int x0=px, x1=px, y0=py, y1=py;
-	while(1){
-		if(X[py+1][px-1] == 0x00) {
-			--px, ++py;
-		} else if(X[py+1][px] == 0x00) {
-			++py;
-		} else if(X[py+1][px+1] == 0x00) {
-			++px, ++py;
-		} else if(X[py][px+1] == 0x00) {
-			++px;
-		} else { break; }
-	}
-	y1=py, x0=px;
-*/
+	printf("x0=%d y0=%d, x1=%d y1=%d\n", x0, y0, x1, y1);
 
 
+//	drawRect(X, 100, 10, 110, 60);
 
 
-//...Determined below
-//	int bh = y1-y0;	// Buffer Height
-//	printf("Line Height (Variable): %d\n" "x0 = %d, y0 = %d, y1 = %d\n", bh, x0, y0, y1);
-/*
-	int buff = bh/2, b0, b1;
-	py = y0+buff, px=0;
-	d=0;
-	x0=0, y0=0, x1=0, y1=0;
-	for(i=0; i<w; i++) {
-		for(j=0; j<bh; j++) {
-			if(X[py+j][i]==0x00) {
-				d = 1;
-				break;
-			}
-		}
-		if(d==1){
-			
-		}
-		++px;
-	}
-
-	printf("\nFirst Position: %d\n", px);
-*/
 /*
 ...Make Output file: WORKING FINE
 */
 
 	FILE *fpo;
-	if((fpo = fopen("./op.pgm","wb")) == NULL){
+	if((fpo = fopen("./op.pgm","wb")) == NULL) {
 		perror("Output File opening Error!\n");
 		exit(1);
 	}
 	x = fwrite(A, nA, 1, fpo);
-	for(i=0; i<h; i++){
+	for(i=0; i<h; i++) {
 		for(j=0; j<w; j++)
 			x = fwrite(&X[i][j], 1, 1, fpo);
 	}
