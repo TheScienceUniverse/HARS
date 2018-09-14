@@ -7,12 +7,12 @@
 void drawRect(BYTE **X, int x0, int y0, int x1, int y1) {
 	int i;
 	for(i=x0; i<x1; i++) {
-		X[y0][i]=0x30;
-		X[y1][i]=0x30;
+		X[y0][i]=0x80;
+		X[y1][i]=0x80;
 	}
 	for(i=y0; i<=y1; i++) {
-		X[i][x0]=0x30;
-		X[i][x1]=0x30;
+		X[i][x0]=0x80;
+		X[i][x1]=0x80;
 	}
 }
 
@@ -131,18 +131,14 @@ printf("\n");
 
 		}
 		if(d==0 && s==1) {
-drawRect(X, x0, y0, x1, y1);
-x0=w, y0=b1, x1=0, y1=b0;
+			drawRect(X, x0-1, y0-1, x1+1, y1+1);
+			x0=w, y0=b1, x1=0, y1=b0;
 			s=0; ++count;
-//			X[j][i]=0x80;
 		}
-//		if(s==0) { drawRect(X, x0, y0, x1, y1); }
 		if(count>bh/4) { count=0; break; }
-//		printf("\n");
-
 	}
 
-	printf("x0=%d y0=%d, x1=%d y1=%d\n", x0, y0, x1, y1);
+//	printf("x0=%d y0=%d, x1=%d y1=%d\n", x0, y0, x1, y1);
 
 
 //	drawRect(X, 100, 10, 110, 60);
