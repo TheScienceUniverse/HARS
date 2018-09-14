@@ -78,10 +78,11 @@ printf("\n");
 		printf("\n");
 	}
 */
+int ic=0;
 	BYTE d=0;
-	int px, py, bw, bh, b0, b1;
-	for(i=0; i<h; i++){
-		for(j=0; j<w; j++){
+	int px, py, bw, bh, b0=0, b1;
+FIND_H:	for(i=b0; i<h; i++) {
+		for(j=0; j<w; j++) {
 			if(X[i][j] == 0x00) {
 				d = 1;
 				break;
@@ -90,7 +91,7 @@ printf("\n");
 		if(d==1)	break;
 	}
 	px=j, py=i, b0=py;
-	printf("First Pixel found at: %d %d %02x\n", px, py, X[py][px]);
+//	printf("First Pixel found at: %d %d %02x\n", px, py, X[py][px]);
 
 	i=py+1;
 	while(d!=0 && py<h) {
@@ -104,10 +105,10 @@ printf("\n");
 		++i;
 	}
 	py=i, px=j-1;
-	printf("Last Pixel found at: %d %d %02x\n", px, py, X[py-1][px-1]);
+//	printf("Last Pixel found at: %d %d %02x\n", px, py, X[py-1][px-1]);
 	b1=py;
 
-	printf("Height Threshold for the 1st Line: %d\n", b1-b0);
+//	printf("Height Threshold for the 1st Line: %d\n", b1-b0);
 
 	d=0;
 	int s=0, count=0;
@@ -136,6 +137,17 @@ printf("\n");
 			s=0; ++count;
 		}
 		if(count>bh/4) { count=0; break; }
+	}
+/*
+	if(b1<h) {
+		b0=b1+1, ++ic;
+		goto FIND_H;
+	}
+*/
+printf("Iteration Count %d b1=%d\n", ic, b1);
+	if(b1<h && ic<21) {
+		b0=b1+1, ++ic;
+		goto FIND_H;
 	}
 
 //	printf("x0=%d y0=%d, x1=%d y1=%d\n", x0, y0, x1, y1);
