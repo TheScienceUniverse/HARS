@@ -101,7 +101,7 @@ FIND_H:	for(i=b0; i<h; i++) {
 	while(d!=0 && py<h) {
 		d=0;
 		for(j=0; j<w; j++) {
-			if(X[i][j] == 0x00) {
+			if(X[i][j] < 0xff) {//== 0x00) {
 				d = 1;
 				break;
 			}
